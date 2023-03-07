@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Defense implements Runnable {
 
@@ -12,6 +13,10 @@ public class Defense implements Runnable {
 
     private List<Student> students; // Arrived students
 
+    // Calculation of average grade
+    private AtomicInteger sumOfGrades;
+    private AtomicInteger studentsGraded;
+
     public Defense(int duration) {
         // Defense duration
         this.duration = duration;
@@ -21,6 +26,9 @@ public class Defense implements Runnable {
 
         // Allocate students list
         students = new ArrayList<>();
+
+        sumOfGrades = new AtomicInteger(0);
+        studentsGraded = new AtomicInteger(0);
     }
 
     public void start() {
@@ -29,6 +37,9 @@ public class Defense implements Runnable {
         Utils.setStartTime(); // Set start time
         Utils.sleep(duration); // Sleep main thread for duration
         Utils.print("END");
+
+        // Print average grade
+        Utils.print("Average grade: " + (float)sumOfGrades.get() / (float)studentsGraded.get());
     }
 
     public void waitForStart() {
@@ -68,6 +79,11 @@ public class Defense implements Runnable {
 
             }
         }
+    }
+
+    public void addGrade(int grade) {
+        sumOfGrades.addAndGet(grade);
+        studentsGraded.incrementAndGet();
     }
 
     synchronized public void studentReady(Student student) {

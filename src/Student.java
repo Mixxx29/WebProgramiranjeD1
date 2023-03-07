@@ -78,6 +78,9 @@ public class Student implements Runnable {
         this.startTime = startTime;
         this.endTime = endTime;
 
+        // Add grade
+        defense.addGrade(grade);
+
         // Notify student
         gradeLatch.countDown();
     }
